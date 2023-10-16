@@ -3,29 +3,15 @@ import { CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, 
 import useStyles from './styles';
 import Details from '../Details/Details';
 
-const List = ({ }) => {
+const List = ({ places }) => {
   const classes = useStyles();
   //Create uses state hook
   const [type, setType] = useState('restaurants');
   const [rating, setRating] = useState('');
 
-  // places
-  const places = [
-    { name: 'name1' },
-    { name: 'name2' },
-    { name: 'name3' },
-    { name: 'name4' },
-    { name: 'name5' },
-    { name: 'name6' },
-    { name: 'name7' },
-    { name: 'name8' },
-    { name: 'name9' },
-    
-  ];
 
   return(
-    <div className={classes.container}>
-            
+    <div className={classes.container}>            
       <Typography variant="h4" className={classes.title}> Let's Discover the World!</Typography>
       <br></br>
       <Typography variant="h6" className={classes.title}> Select your Prefered Activity</Typography>
