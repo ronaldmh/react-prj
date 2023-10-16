@@ -23,7 +23,7 @@ function App() {
 
   // use effect to update map
   useEffect(() => {
-    getPlacesData()
+    getPlacesData(bounds.sw, bounds.ne)
       .then((data) => {        
         setPlaces(data);
       })
