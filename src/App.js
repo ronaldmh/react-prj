@@ -1,57 +1,95 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect } from 'react';
 import { CssBaseline, Grid } from '@material-ui/core';
+import { getPlacesData } from './api';
 import Header from './components/Header/Header';
 import List from './components/List/List';
-import Carto from './components/Carto/Carto';
-import { getPlacesData } from './api';
-import './App.css';
+import Map from './components/Carto/Carto';
 
-
-
-function App() {
-
-  const [places, setPlaces] = useState([]);
-  const [coordinates, setCoordinates] = useState({});
+const App = () => {
+  const [type, setType] = useState('restaurants');
+  const [rating, setRating] = useState('');
+  const [coords, setCoords] = useState({});
   const [bounds, setBounds] = useState(null);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
+  const [places, setPlaces] = useState([]);
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [childClicked, setChildClicked] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // use efect at the start
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
       setCoords({ lat: latitude, lng: longitude });
     });
   }, []);
-  
 
-  // use effect to update map
   useEffect(() => {
-    getPlacesData(bounds.sw, bounds.ne)
-      .then((data) => {        
-        setPlaces(data);
-      })
-  }, [coordinates, bounds]);
+    const filtered = places ? places.filter((place) => Number(place.rating) > rating) : [];
 
+    setFilteredPlaces(filtered);
+  }, [rating, places]);
+
+  useEffect(() => {
+    if (bounds) {
+      setIsLoading(true);
+      getPlacesData(type, bounds.sw, bounds.ne)
+        .then((data) => {
+          console.log(data);
+          const filteredData = data.filter((place) => place.name && place.num_reviews > 0);
+          if (filteredData.length > 0) {
+            setPlaces(filteredData);
+            setFilteredPlaces([]);
+            setRating('');
+          } else {
+            
+            console.log('No places were found.');
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          
+          console.error('Error loading locations:', error);
+          setIsLoading(false);
+        });
+    }
+  }, [bounds, type]);
+  const onLoad = (autoC) => setAutocomplete(autoC);
+  const onPlaceChanged = () => {
+    if (autocomplete) {
+      const lat = autocomplete.getPlace().geometry.location.lat();
+      const lng = autocomplete.getPlace().geometry.location.lng();
+
+      setCoords({ lat, lng });
+    }
+  };
 
   return (
-    <div className="App">
- 
-      <CssBaseline></CssBaseline>
-      <Header></Header>
-      <Grid container spacing={3} style={{width: '100%'}}>
+    <>
+      <CssBaseline />
+      <Header onPlaceChanged={onPlaceChanged} onLoad={onLoad} />
+      <Grid container spacing={3} style={{ width: '100%' }}>
         <Grid item xs={12} md={4}>
-          <List places = {places}></List>
+          <List
+            isLoading={isLoading}
+            childClicked={childClicked}
+            places={filteredPlaces.length ? filteredPlaces : places}
+            type={type}
+            setType={setType}
+            rating={rating}
+            setRating={setRating}
+          />
         </Grid>
-        
-        <Grid item xs={12} md={8}>
-          <Carto
-            setCoordinates={setCoordinates}
+        <Grid item xs={12} md={8} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Map
+            setChildClicked={setChildClicked}
             setBounds={setBounds}
-            coordinates={Coordinates}>
-          </Carto>
-        </Grid>        
-      </Grid>     
-      
-    </div>
+            setCoords={setCoords}
+            coords={coords}
+            places={filteredPlaces.length ? filteredPlaces : places}
+          />
+        </Grid>
+      </Grid>
+    </>
   );
-}
+};
 
 export default App;
