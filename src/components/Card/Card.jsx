@@ -5,16 +5,17 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import Rating from '@material-ui/lab/Rating';
 import useStyles from './styles.js';
 
+
 const PlaceDetails = ({ place, selected, refProp }) => {
   if (selected) refProp?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const classes = useStyles();
 
   return (
-    <Card elevation={6}>
+    <Card elevation={6} className={classes.cardBackground}>
       <CardMedia
         style={{ height: 350 }}
-        image={place.photo ? place.photo.images.large.url : 'https://www.foodserviceandhospitality.com/wp-content/uploads/2016/09/Restaurant-Placeholder-001.jpg'}
-        title={place.name}
+        image={place.photo ? place.photo.images.large.url : 'https://placehold.co/400'}
+        title={place.name}        
       />
       <CardContent>
         <Typography gutterBottom variant="h5">{place.name}</Typography>
@@ -55,7 +56,7 @@ const PlaceDetails = ({ place, selected, refProp }) => {
         )}
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary" onClick={() => window.open(place.web_url, '_blank')}>
+        <Button className={classes.text} size="small" color="primary" onClick={() => window.open(place.web_url, '_blank')}>
           Trip Advisor
         </Button>
         <Button size="small" color="primary" onClick={() => window.open(place.website, '_blank')}>

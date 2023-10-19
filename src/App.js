@@ -6,7 +6,7 @@ import List from './components/List/List';
 import Map from './components/Carto/Carto';
 
 const App = () => {
-  const [type, setType] = useState('restaurants');
+  const [type, setType] = useState('attractions');
   const [rating, setRating] = useState('');
   const [coords, setCoords] = useState({});
   const [bounds, setBounds] = useState(null);
@@ -40,13 +40,11 @@ const App = () => {
             setFilteredPlaces([]);
             setRating('');
           } else {
-            
             console.log('No places were found.');
           }
           setIsLoading(false);
         })
         .catch((error) => {
-          
           console.error('Error loading locations:', error);
           setIsLoading(false);
         });
@@ -62,8 +60,15 @@ const App = () => {
     }
   };
 
+  const bodyStyle = {
+    backgroundColor: 'rgba(10, 10, 10, 1)',
+    color: 'white',
+    margin: 0,
+    padding: 0,
+  };
+
   return (
-    <>
+    <div style={bodyStyle}>
       <CssBaseline />
       <Header onPlaceChanged={onPlaceChanged} onLoad={onLoad} />
       <Grid container spacing={3} style={{ width: '100%' }}>
@@ -88,7 +93,7 @@ const App = () => {
           />
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 
