@@ -5,7 +5,6 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import Rating from '@material-ui/lab/Rating';
 import useStyles from './styles.js';
 
-
 const PlaceDetails = ({ place, selected, refProp }) => {
   if (selected) refProp?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const classes = useStyles();
@@ -57,14 +56,13 @@ const PlaceDetails = ({ place, selected, refProp }) => {
       </CardContent>
       <CardActions>
         <Button className={classes.text} size="small" color="primary" onClick={() => window.open(place.web_url, '_blank')}>
-          Trip Advisor
+          Go to Trip Advisor
         </Button>
-        <Button size="small" color="primary" onClick={() => window.open(place.website, '_blank')}>
-          Website
+        <Button className={classes.text} size="small" color="primary" onClick={() => window.open(place.website, '_blank')}>
+          Go to Website
         </Button>
       </CardActions>
     </Card>
   );
 };
-
 export default PlaceDetails;
